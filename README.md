@@ -14,3 +14,4 @@ http://www.switchdoc.com/sunairplus-solar-power-controllerdata-collector/
 Thanks to the original Adafruit INA219 library, although very little of it ended up being used  The INA3221 is a much different beast than the INA219.
 
 
+I'm adding serparate shunt values per channel
