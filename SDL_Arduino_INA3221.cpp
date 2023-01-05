@@ -27,17 +27,17 @@
     @brief  Sends a single command byte over I2C
 */
 /**************************************************************************/
-void SDL_Arduino_INA3221::wireWriteRegister(uint8_t reg, uint16_t value)
+void SDL_Arduino_INA3221::wireWriteRegister(uint8_t reg, uint16_t *value)
 {
   Wire.beginTransmission(INA3221_i2caddr);
 #if ARDUINO >= 100
-  Wire.write(reg);                 // Register
-  Wire.write((value >> 8) & 0xFF); // Upper 8-bits
-  Wire.write(value & 0xFF);        // Lower 8-bits
+  Wire.write(reg);                  // Register
+  Wire.write((*value >> 8) & 0xFF); // Upper 8-bits
+  Wire.write(*value & 0xFF);        // Lower 8-bits
 #else
-  Wire.send(reg);          // Register
-  Wire.send(value >> 8);   // Upper 8-bits
-  Wire.send(value & 0xFF); // Lower 8-bits
+  Wire.send(reg);           // Register
+  Wire.send(*value >> 8);   // Upper 8-bits
+  Wire.send(*value & 0xFF); // Lower 8-bits
 #endif
   Wire.endTransmission();
 }
@@ -54,7 +54,7 @@ void SDL_Arduino_INA3221::wireReadRegister(uint8_t reg, uint16_t *value)
 #if ARDUINO >= 100
   Wire.write(reg); // Register
 #else
-  Wire.send(reg);          // Register
+  Wire.send(reg);           // Register
 #endif
   Wire.endTransmission();
 
@@ -84,7 +84,7 @@ void SDL_Arduino_INA3221::INA3221SetConfig(void)
                     INA3221_CONFIG_MODE_2 |
                     INA3221_CONFIG_MODE_1 |
                     INA3221_CONFIG_MODE_0;
-  wireWriteRegister(INA3221_REG_CONFIG, config);
+  wireWriteRegister(INA3221_REG_CONFIG, &config);
 }
 
 /**************************************************************************/
@@ -100,19 +100,6 @@ SDL_Arduino_INA3221::SDL_Arduino_INA3221(uint8_t addr, float shuntresistor_1, fl
   INA3221_shuntresistor[1] = shuntresistor_2;
   INA3221_shuntresistor[2] = shuntresistor_3;
 }
-
-/**************************************************************************/
-/*!
-    @brief  mix shunt vals
-*/
-/**************************************************************************/
-// void setShuntRes(float res_ch1, float res_ch2, float res_ch3);
-// SDL_Arduino_INA3221::setShuntRes(float res_ch1, float res_ch2, float res_ch3)
-// {
-//   INA3221_shuntresistor[0] = res_ch1;
-//   INA3221_shuntresistor[1] = res_ch2;
-//   INA3221_shuntresistor[2] = res_ch3;
-// }
 
 /**************************************************************************/
 /*!
@@ -205,4 +192,26 @@ int SDL_Arduino_INA3221::getManufID()
   uint16_t value;
   wireReadRegister(0xFE, &value);
   return value;
+}
+
+/**************************************************************************/
+/*!
+    @brief  mix shunt vals
+*/
+/**************************************************************************/
+// void setShuntRes(float res_ch1, float res_ch2, float res_ch3);
+void SDL_Arduino_INA3221::setShuntRes(float res_ch1, float res_ch2, float res_ch3)
+{
+  INA3221_shuntresistor[0] = res_ch1;
+  INA3221_shuntresistor[1] = res_ch2;
+  INA3221_shuntresistor[2] = res_ch3;
+}
+
+void SDL_Arduino_INA3221::setAveragingMode(ina3221_avg_mode_t mode)
+{
+  conf_reg_t conf_reg;
+
+  wireReadRegister(0, (uint16_t *)&conf_reg);
+  conf_reg.avg_mode = mode;
+  wireWriteRegister(0, (uint16_t *)&conf_reg);
 }

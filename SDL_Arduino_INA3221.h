@@ -73,8 +73,37 @@
 
 #define SHUNT_RESISTOR_VALUE (0.1) // default shunt resistor value of 0.1 Ohm
 
+// Averaging modes
+typedef enum
+{
+    INA3221_REG_CONF_AVG_1 = 0,
+    INA3221_REG_CONF_AVG_4,
+    INA3221_REG_CONF_AVG_16,
+    INA3221_REG_CONF_AVG_64,
+    INA3221_REG_CONF_AVG_128,
+    INA3221_REG_CONF_AVG_256,
+    INA3221_REG_CONF_AVG_512,
+    INA3221_REG_CONF_AVG_1024
+} ina3221_avg_mode_t;
+
 class SDL_Arduino_INA3221
 {
+
+    // Configuration register
+    typedef struct
+    {
+        uint16_t mode_shunt_en : 1;
+        uint16_t mode_bus_en : 1;
+        uint16_t mode_continious_en : 1;
+        uint16_t shunt_conv_time : 3;
+        uint16_t bus_conv_time : 3;
+        uint16_t avg_mode : 3;
+        uint16_t ch3_en : 1;
+        uint16_t ch2_en : 1;
+        uint16_t ch1_en : 1;
+        uint16_t reset : 1;
+    } conf_reg_t __attribute__((packed));
+
 public:
     SDL_Arduino_INA3221(uint8_t addr = INA3221_ADDRESS, float shuntresistor_1 = SHUNT_RESISTOR_VALUE, float shuntresistor_2 = SHUNT_RESISTOR_VALUE, float shuntresistor_3 = SHUNT_RESISTOR_VALUE);
     void begin(void);
@@ -82,21 +111,22 @@ public:
     float getShuntVoltage_mV(int channel);
     float getCurrent_mA(int channel);
     int getManufID();
+
     // Sets shunt resistor value in mOhm
-    // void setShuntRes(float res_ch1, float res_ch2, float res_ch3);
+    void setShuntRes(float res_ch1, float res_ch2, float res_ch3);
+
     // Sets filter resistors value in Ohm
     void setFilterRes(uint32_t res_ch1, uint32_t res_ch2, uint32_t res_ch3);
-    // Sets averaging mode. Sets number of samples that are collected
-    // and averaged togehter.
 
     uint8_t INA3221_i2caddr;
     float INA3221_shuntresistor[3];
-    // float INA3221_shuntresistor_C2;
-    // float INA3221_shuntresistor_C3;
 
-    void wireWriteRegister(uint8_t reg, uint16_t value);
+    void wireWriteRegister(uint8_t reg, uint16_t *value);
     void wireReadRegister(uint8_t reg, uint16_t *value);
     void INA3221SetConfig(void);
     int16_t getBusVoltage_raw(int channel);
     int16_t getShuntVoltage_raw(int channel);
+    // Sets averaging mode. Sets number of samples that are collected
+    // and averaged togehter.
+    void setAveragingMode(ina3221_avg_mode_t mode);
 };
