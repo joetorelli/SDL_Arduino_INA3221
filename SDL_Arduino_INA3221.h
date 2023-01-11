@@ -4,7 +4,8 @@
 //   Version 1.2
 //   SwitchDoc Labs   September 2019
 //
-//
+//  added three channels
+//  looking into adding on chip averaging
 
 /**************************************************************************/
 /*!
@@ -102,7 +103,7 @@ class SDL_Arduino_INA3221
         uint16_t ch2_en : 1;
         uint16_t ch1_en : 1;
         uint16_t reset : 1;
-    } conf_reg_t __attribute__((packed));
+    } conf_reg_t; //__attribute__((packed));
 
 public:
     SDL_Arduino_INA3221(uint8_t addr = INA3221_ADDRESS, float shuntresistor_1 = SHUNT_RESISTOR_VALUE, float shuntresistor_2 = SHUNT_RESISTOR_VALUE, float shuntresistor_3 = SHUNT_RESISTOR_VALUE);
