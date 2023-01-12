@@ -216,66 +216,70 @@ void SDL_Arduino_INA3221::setAveragingMode(ina3221_avg_mode_t mode)
   wireWriteRegister(INA3221_REG_CONFIG, (uint16_t *)&conf_reg);
 }
 
+void SDL_Arduino_INA3221::setBusConversionTime(ina3221_conv_time_t convTime)
+{
+  conf_reg_t conf_reg;
 
-void SDL_Arduino_INA3221::setBusConversionTime(ina3221_conv_time_t convTime) {
-    conf_reg_t conf_reg;
-
-    wireReadRegister(INA3221_REG_CONFIG, (uint16_t*)&conf_reg);
-    conf_reg.bus_conv_time = convTime;
-    wireWriteRegister(INA3221_REG_CONFIG, (uint16_t*)&conf_reg);
+  wireReadRegister(INA3221_REG_CONFIG, (uint16_t *)&conf_reg);
+  conf_reg.bus_conv_time = convTime;
+  wireWriteRegister(INA3221_REG_CONFIG, (uint16_t *)&conf_reg);
 }
 
-void SDL_Arduino_INA3221::setShuntConversionTime(ina3221_conv_time_t convTime) {
-    conf_reg_t conf_reg;
+void SDL_Arduino_INA3221::setShuntConversionTime(ina3221_conv_time_t convTime)
+{
+  conf_reg_t conf_reg;
 
-    wireReadRegister(INA3221_REG_CONFIG, (uint16_t*)&conf_reg);
-    conf_reg.shunt_conv_time = convTime;
-    wireWriteRegister(INA3221_REG_CONFIG, (uint16_t*)&conf_reg);
+  wireReadRegister(INA3221_REG_CONFIG, (uint16_t *)&conf_reg);
+  conf_reg.shunt_conv_time = convTime;
+  wireWriteRegister(INA3221_REG_CONFIG, (uint16_t *)&conf_reg);
 }
 
+void SDL_Arduino_INA3221::setChannelEnable(ina3221_ch_t channel)
+{
+  conf_reg_t conf_reg;
 
-void SDL_Arduino_INA3221::setChannelEnable(ina3221_ch_t channel) {
-    conf_reg_t conf_reg;
+  wireReadRegister(INA3221_REG_CONFIG, (uint16_t *)&conf_reg);
 
-    wireReadRegister(INA3221_REG_CONFIG, (uint16_t*)&conf_reg);
+  switch (channel)
+  {
+  case INA3221_CH1:
+    conf_reg.ch1_en = 1;
+    break;
+  case INA3221_CH2:
+    conf_reg.ch2_en = 1;
+    break;
+  case INA3221_CH3:
+    conf_reg.ch3_en = 1;
+    break;
+  case INA3221_CH_NUM:
+    // conf_reg.ch3_en = 0;
+    break;
+  }
 
-    switch(channel){
-        case INA3221_CH1:
-            conf_reg.ch1_en = 1;
-            break;
-        case INA3221_CH2:
-            conf_reg.ch2_en = 1;
-            break;
-        case INA3221_CH3:
-            conf_reg.ch3_en = 1;
-            break;
-        case INA3221_CH_NUM:
-            //conf_reg.ch3_en = 0;
-            break;            
-    }
-
-    wireWriteRegister(INA3221_REG_CONFIG, (uint16_t*)&conf_reg);
+  wireWriteRegister(INA3221_REG_CONFIG, (uint16_t *)&conf_reg);
 }
 
-void SDL_Arduino_INA3221::setChannelDisable(ina3221_ch_t channel) {
-    conf_reg_t conf_reg;
+void SDL_Arduino_INA3221::setChannelDisable(ina3221_ch_t channel)
+{
+  conf_reg_t conf_reg;
 
-    wireReadRegister(INA3221_REG_CONFIG, (uint16_t*)&conf_reg);
+  wireReadRegister(INA3221_REG_CONFIG, (uint16_t *)&conf_reg);
 
-    switch(channel){
-        case INA3221_CH1:
-            conf_reg.ch1_en = 0;
-            break;
-        case INA3221_CH2:
-            conf_reg.ch2_en = 0;
-            break;
-        case INA3221_CH3:
-            conf_reg.ch3_en = 0;
-            break;
-        case INA3221_CH_NUM:
-            //conf_reg.ch3_en = 0;
-            break;
-    }
+  switch (channel)
+  {
+  case INA3221_CH1:
+    conf_reg.ch1_en = 0;
+    break;
+  case INA3221_CH2:
+    conf_reg.ch2_en = 0;
+    break;
+  case INA3221_CH3:
+    conf_reg.ch3_en = 0;
+    break;
+  case INA3221_CH_NUM:
+    // conf_reg.ch3_en = 0;
+    break;
+  }
 
-    wireWriteRegister(INA3221_REG_CONFIG, (uint16_t*)&conf_reg);
+  wireWriteRegister(INA3221_REG_CONFIG, (uint16_t *)&conf_reg);
 }
