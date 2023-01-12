@@ -4,8 +4,8 @@
 //   Version 1.2
 //   SwitchDoc Labs   September 2019
 //
-//  added three channels
-//  looking into adding on chip averaging
+//  modified for 3 different shunt resistors 
+//  adding on chip averaging
 
 /**************************************************************************/
 /*!
@@ -73,7 +73,13 @@
 /*=========================================================================*/
 
 #define SHUNT_RESISTOR_VALUE (0.1) // default shunt resistor value of 0.1 Ohm
-
+// Channels
+typedef enum {
+    INA3221_CH1 = 0,
+    INA3221_CH2,
+    INA3221_CH3,
+    INA3221_CH_NUM
+} ina3221_ch_t;
 // Averaging modes
 typedef enum
 {
@@ -86,6 +92,20 @@ typedef enum
     INA3221_REG_CONF_AVG_512,
     INA3221_REG_CONF_AVG_1024
 } ina3221_avg_mode_t;
+
+// Conversion times
+typedef enum {
+    INA3221_REG_CONF_CT_140US = 0,
+    INA3221_REG_CONF_CT_204US,
+    INA3221_REG_CONF_CT_332US,
+    INA3221_REG_CONF_CT_588US,
+    INA3221_REG_CONF_CT_1100US,
+    INA3221_REG_CONF_CT_2116US,
+    INA3221_REG_CONF_CT_4156US,
+    INA3221_REG_CONF_CT_8244US
+} ina3221_conv_time_t;
+
+
 
 class SDL_Arduino_INA3221
 {
@@ -104,6 +124,25 @@ class SDL_Arduino_INA3221
         uint16_t ch1_en : 1;
         uint16_t reset : 1;
     } conf_reg_t; //__attribute__((packed));
+    // Mask/Enable register
+    typedef struct {
+        uint16_t conv_ready:1;
+        uint16_t timing_ctrl_alert:1;
+        uint16_t pwr_valid_alert:1;
+        uint16_t warn_alert_ch3:1;
+        uint16_t warn_alert_ch2:1;
+        uint16_t warn_alert_ch1:1;
+        uint16_t shunt_sum_alert:1;
+        uint16_t crit_alert_ch3:1;
+        uint16_t crit_alert_ch2:1;
+        uint16_t crit_alert_ch1:1;
+        uint16_t crit_alert_latch_en:1;
+        uint16_t warn_alert_latch_en:1;
+        uint16_t shunt_sum_en_ch3:1;
+        uint16_t shunt_sum_en_ch2:1;
+        uint16_t shunt_sum_en_ch1:1;
+        uint16_t reserved:1;
+    } masken_reg_t;  // __attribute__((packed));
 
 public:
     SDL_Arduino_INA3221(uint8_t addr = INA3221_ADDRESS, float shuntresistor_1 = SHUNT_RESISTOR_VALUE, float shuntresistor_2 = SHUNT_RESISTOR_VALUE, float shuntresistor_3 = SHUNT_RESISTOR_VALUE);
@@ -113,11 +152,6 @@ public:
     float getCurrent_mA(int channel);
     int getManufID();
 
-    // Sets shunt resistor value in mOhm
-    void setShuntRes(float res_ch1, float res_ch2, float res_ch3);
-
-    // Sets filter resistors value in Ohm
-    void setFilterRes(uint32_t res_ch1, uint32_t res_ch2, uint32_t res_ch3);
 
     uint8_t INA3221_i2caddr;
     float INA3221_shuntresistor[3];
@@ -127,7 +161,27 @@ public:
     void INA3221SetConfig(void);
     int16_t getBusVoltage_raw(int channel);
     int16_t getShuntVoltage_raw(int channel);
+
+        // Sets shunt resistor value in mOhm
+    void setShuntRes(float res_ch1, float res_ch2, float res_ch3);
+
+    // Sets filter resistors value in Ohm
+    //void setFilterRes(uint32_t res_ch1, uint32_t res_ch2, uint32_t res_ch3);
+
     // Sets averaging mode. Sets number of samples that are collected
     // and averaged togehter.
     void setAveragingMode(ina3221_avg_mode_t mode);
+    // Sets bus-voltage conversion time.
+    void setBusConversionTime(ina3221_conv_time_t convTime);
+
+    // Sets shunt-voltage conversion time.
+    void setShuntConversionTime(ina3221_conv_time_t convTime);
+
+    // Enables channel measurements
+    void setChannelEnable(ina3221_ch_t channel);
+
+    // Disables channel measurements
+    void setChannelDisable(ina3221_ch_t channel);
+
+
 };
