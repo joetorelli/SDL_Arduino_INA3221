@@ -112,8 +112,15 @@ void SDL_Arduino_INA3221::begin()
   // Set chip to known config values to start
   INA3221SetConfig();
 
-  // Serial.print("shut resistor="); Serial.println(INA3221_shuntresistor);
-  // Serial.print("address="); Serial.println(INA3221_i2caddr);
+  /*   Serial.print("shunt r1=");
+    Serial.println(INA3221_shuntresistor[0]);
+    Serial.print("shunt r2=");
+    Serial.println(INA3221_shuntresistor[1]);
+    Serial.print("shunt r3=");
+    Serial.println(INA3221_shuntresistor[2]);
+    Serial.print("address=");
+    Serial.println(INA3221_i2caddr);
+    delay(5000); */
 }
 
 /**************************************************************************/
@@ -125,8 +132,15 @@ int16_t SDL_Arduino_INA3221::getBusVoltage_raw(int channel)
 {
   uint16_t value;
   wireReadRegister(INA3221_REG_BUSVOLTAGE_1 + (channel - 1) * 2, &value);
-  //    Serial.print("BusVoltage_raw=");
-  //    Serial.println(value,HEX);
+
+  /*   Serial.print("BusV_raw");
+    Serial.print(channel);
+    Serial.print("= ");
+    Serial.print(value, HEX);
+    Serial.print(" / ");
+    Serial.print(value, DEC);
+    Serial.print(" / ");
+    Serial.println((int16_t)(value), DEC); */
 
   // Shift to the right 3 to drop CNVR and OVF and multiply by LSB
   return (int16_t)(value);
@@ -141,8 +155,16 @@ int16_t SDL_Arduino_INA3221::getShuntVoltage_raw(int channel)
 {
   uint16_t value;
   wireReadRegister(INA3221_REG_SHUNTVOLTAGE_1 + (channel - 1) * 2, &value);
-  // Serial.print("ShuntVoltage_raw=");
-  // Serial.println(value,HEX);
+
+  /*   Serial.print("ShuntV_raw");
+    Serial.print(channel);
+    Serial.print("= ");
+    Serial.print(value, HEX);
+    Serial.print(" / ");
+    Serial.print(value, DEC);
+    Serial.print(" / ");
+    Serial.println((int16_t)(value), DEC); */
+
   return (int16_t)value;
 }
 
@@ -160,7 +182,7 @@ float SDL_Arduino_INA3221::getShuntVoltage_mV(int channel)
 
 /**************************************************************************/
 /*!
-    @brief  Gets the shunt voltage in volts
+    @brief  Gets the buss voltage in volts
 */
 /**************************************************************************/
 float SDL_Arduino_INA3221::getBusVoltage_V(int channel)

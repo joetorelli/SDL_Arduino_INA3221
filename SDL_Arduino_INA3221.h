@@ -124,6 +124,7 @@ class SDL_Arduino_INA3221
         uint16_t ch1_en : 1;
         uint16_t reset : 1;
     } conf_reg_t; //__attribute__((packed));
+
     // Mask/Enable register
     typedef struct
     {
@@ -154,7 +155,7 @@ public:
     int getManufID();
 
     uint8_t INA3221_i2caddr;
-    float INA3221_shuntresistor[3];
+    float INA3221_shuntresistor[INA3221_CH_NUM];
 
     void wireWriteRegister(uint8_t reg, uint16_t *value);
     void wireReadRegister(uint8_t reg, uint16_t *value);
