@@ -131,7 +131,7 @@ void SDL_Arduino_INA3221::begin()
 int16_t SDL_Arduino_INA3221::getBusVoltage_raw(int channel)
 {
   uint16_t value;
-  wireReadRegister(INA3221_REG_BUSVOLTAGE_1 + (channel - 1) * 2, &value);
+  wireReadRegister(INA3221_REG_BUSVOLTAGE_1 + (channel)*2, &value);
 
   /*   Serial.print("BusV_raw");
     Serial.print(channel);
@@ -154,7 +154,7 @@ int16_t SDL_Arduino_INA3221::getBusVoltage_raw(int channel)
 int16_t SDL_Arduino_INA3221::getShuntVoltage_raw(int channel)
 {
   uint16_t value;
-  wireReadRegister(INA3221_REG_SHUNTVOLTAGE_1 + (channel - 1) * 2, &value);
+  wireReadRegister(INA3221_REG_SHUNTVOLTAGE_1 + (channel)*2, &value);
 
   /*   Serial.print("ShuntV_raw");
     Serial.print(channel);
@@ -170,7 +170,7 @@ int16_t SDL_Arduino_INA3221::getShuntVoltage_raw(int channel)
 
 /**************************************************************************/
 /*!
-    @brief  Gets the shunt voltage in mV (so +-168.3mV)
+    @brief  Gets the shunt voltage in mV (so +-163.8mV)
 */
 /**************************************************************************/
 float SDL_Arduino_INA3221::getShuntVoltage_mV(int channel)
@@ -199,7 +199,7 @@ float SDL_Arduino_INA3221::getBusVoltage_V(int channel)
 /**************************************************************************/
 float SDL_Arduino_INA3221::getCurrent_mA(int channel)
 {
-  float valueDec = getShuntVoltage_mV(channel) / INA3221_shuntresistor[channel - 1];
+  float valueDec = getShuntVoltage_mV(channel) / INA3221_shuntresistor[channel];
 
   return valueDec;
 }
