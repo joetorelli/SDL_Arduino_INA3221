@@ -130,7 +130,7 @@ void SDL_Arduino_INA3221::begin()
 /**************************************************************************/
 int16_t SDL_Arduino_INA3221::getBusVoltage_raw(int channel)
 {
-  // channel = channel = 1;
+
   uint16_t value;
   wireReadRegister(INA3221_REG_BUSVOLTAGE_1 + (channel - 1) * 2, &value);
 
@@ -154,7 +154,7 @@ int16_t SDL_Arduino_INA3221::getBusVoltage_raw(int channel)
 /**************************************************************************/
 int16_t SDL_Arduino_INA3221::getShuntVoltage_raw(int channel)
 {
-  // channel = channel = 1;
+
   uint16_t value;
   wireReadRegister(INA3221_REG_SHUNTVOLTAGE_1 + (channel - 1) * 2, &value);
 
@@ -202,7 +202,7 @@ float SDL_Arduino_INA3221::getBusVoltage_V(int channel)
 /**************************************************************************/
 float SDL_Arduino_INA3221::getCurrent_mA(int channel)
 {
-  float valueDec = getShuntVoltage_mV(channel) / INA3221_shuntresistor[channel];
+  float valueDec = getShuntVoltage_mV(channel) / INA3221_shuntresistor[channel - 1];
 
   return valueDec;
 }
@@ -265,7 +265,7 @@ void SDL_Arduino_INA3221::setChannelEnable(ina3221_ch_t channel)
 
   wireReadRegister(INA3221_REG_CONFIG, (uint16_t *)&conf_reg);
 
-  switch (channel)
+  switch (channel - 1)
   {
   case INA3221_CH1:
     conf_reg.ch1_en = 1;
@@ -290,7 +290,7 @@ void SDL_Arduino_INA3221::setChannelDisable(ina3221_ch_t channel)
 
   wireReadRegister(INA3221_REG_CONFIG, (uint16_t *)&conf_reg);
 
-  switch (channel)
+  switch (channel - 1)
   {
   case INA3221_CH1:
     conf_reg.ch1_en = 0;
