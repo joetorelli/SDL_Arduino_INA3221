@@ -130,8 +130,9 @@ void SDL_Arduino_INA3221::begin()
 /**************************************************************************/
 int16_t SDL_Arduino_INA3221::getBusVoltage_raw(int channel)
 {
+  // channel = channel = 1;
   uint16_t value;
-  wireReadRegister(INA3221_REG_BUSVOLTAGE_1 + (channel)*2, &value);
+  wireReadRegister(INA3221_REG_BUSVOLTAGE_1 + (channel - 1) * 2, &value);
 
   /*   Serial.print("BusV_raw");
     Serial.print(channel);
@@ -153,8 +154,9 @@ int16_t SDL_Arduino_INA3221::getBusVoltage_raw(int channel)
 /**************************************************************************/
 int16_t SDL_Arduino_INA3221::getShuntVoltage_raw(int channel)
 {
+  // channel = channel = 1;
   uint16_t value;
-  wireReadRegister(INA3221_REG_SHUNTVOLTAGE_1 + (channel)*2, &value);
+  wireReadRegister(INA3221_REG_SHUNTVOLTAGE_1 + (channel - 1) * 2, &value);
 
   /*   Serial.print("ShuntV_raw");
     Serial.print(channel);
@@ -163,7 +165,8 @@ int16_t SDL_Arduino_INA3221::getShuntVoltage_raw(int channel)
     Serial.print(" / ");
     Serial.print(value, DEC);
     Serial.print(" / ");
-    Serial.println((int16_t)(value), DEC); */
+    Serial.println((int16_t)(value), DEC);
+  Serial.println(); */
 
   return (int16_t)value;
 }
